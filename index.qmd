@@ -1,0 +1,95 @@
+---
+title: "minijuegos_arroyo"
+format: html
+theme: cosmo
+css: styles.css
+toc: true
+editor: visual
+---
+
+```{python}
+#| label: imports
+#| echo: true
+import numpy as np
+import random
+import pandas as pd
+import matplotlib.pyplot as plt
+import panel as pn
+import hvplot.pandas
+import panel as pn
+import pandas as pd
+pn.extension()
+```
+
+```{python}
+#| label: funciones-y-vars
+#| echo: true
+def obtener_recompensa(probabilidad):
+    return np.random.rand() < probabilidad
+
+probabilidad_pikachu = 0.7
+probabilidad_charmander = 0.3
+historial = []
+
+df = pd.DataFrame(columns=['Ensayo', 'Elección', 'Recompensa'])
+
+opciones = ['Pikachu', 'Charmander']
+modo_restringido = False
+total_intentos = {'Pikachu': 0, 'Charmander': 0}
+limite_intentos = 40
+
+def elegir_pokemon(eleccion):
+    global df, total_intentos, modo_restringido
+    if modo_restringido and total_intentos[eleccion] >= limite_intentos:
+        return f"No puedes elegir más veces a {eleccion} en la condición restringida."
+    
+    ensayo = len(df) + 1
+    recompensa = obtener_recompensa(probabilidad_pikachu if eleccion == 'Pikachu' else probabilidad_charmander)
+    df = pd.concat([df, pd.DataFrame([[ensayo, eleccion, recompensa]], columns=['Ensayo', 'Elección', 'Recompensa'])], ignore_index=True)
+    total_intentos[eleccion] += 1
+    return f"Ensayo {ensayo}: Elegiste a {eleccion}. Ganaste {'⭐' if recompensa else 'ninguna estrella'}"
+
+def actualizar_grafico():
+    if df.empty:
+        return "Aún no hay datos."
+    df['Recompensa Num'] = df['Recompensa'].astype(int)
+    return df.hvplot.line(x='Ensayo', y='Recompensa Num', by='Elección', title='Evolución de Probabilidades', line_width=2)
+
+def cambiar_modo(event):
+    global modo_restringido, df, total_intentos
+    modo_restringido = modo_selector.value == 'Condición Restringida'
+    df = pd.DataFrame(columns=['Ensayo', 'Elección', 'Recompensa'])
+    total_intentos = {'Pikachu': 0, 'Charmander': 0}
+    output_text.value = "Modo cambiado. Elige un Pokémon para comenzar el experimento."
+
+```
+
+```{python}
+#| label: interfaz
+#| echo: false
+modo_selector = pn.widgets.RadioButtonGroup(name='Modo de Juego', options=['Condición Libre', 'Condición Restringida'])
+modo_selector.param.watch(cambiar_modo, 'value')
+
+button_pikachu = pn.widgets.Button(name='Elegir Pikachu', button_type='success')
+button_charmander = pn.widgets.Button(name='Elegir Charmander', button_type='danger')
+output_text = pn.widgets.StaticText(value="Elige un Pokémon para comenzar el experimento.")
+
+button_pikachu.on_click(lambda event: output_text.param.update(value=elegir_pokemon('Pikachu')))
+button_charmander.on_click(lambda event: output_text.param.update(value=elegir_pokemon('Charmander')))
+
+pn.Column(
+    "# Experimento de Probabilidades con Pokémon",
+    modo_selector,
+    pn.Row(button_pikachu, button_charmander),
+    output_text,
+    pn.bind(actualizar_grafico)
+)
+```
+
+```{python}
+#| label: slider
+#| echo: true
+slider = pn.widgets.IntSlider(name='Slider', start=0, end=10)
+slider
+
+```

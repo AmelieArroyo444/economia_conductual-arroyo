@@ -1,0 +1,187 @@
+---
+title: "experimento_pokemon.qmd"
+---
+
+---
+title: "Pokémon Probabilities"
+format: html
+execute:
+  echo: true
+  eval: true
+  engine: knitr
+  freeze: auto
+  cache: false
+  warning: false
+  message: false
+  error: true
+  # Define Python path if needed
+  # python: "/ruta/a/tu/python"
+---
+
+### 🔁 **Política**
+
+Una política es la regla que un agente sigue para **decidir qué acción tomar** en cada estado. Es clave para **maximizar recompensas a largo plazo**. Es como la estrategia del jugador en un videojuego.
+
+------------------------------------------------------------------------
+
+### 🎰 **El problema del bandido de múltiples brazos**
+
+Imagina una máquina con varios botones (brazos), cada uno con distinta probabilidad de darte una recompensa. Para saber cuál es el mejor, necesitas **probar todos suficientes veces**, pero si **exploras demasiado, pierdes tiempo para explotar el mejor**. Ahí nace...
+
+------------------------------------------------------------------------
+
+### ⚖️ **Dilema Exploración - Explotación**
+
+Un clásico: ¿probar nuevas opciones (explorar) o seguir con la que ya conoces que funciona (explotar)?
+
+🔹 **Explorar mucho** = Menos recompensas inmediatas.
+
+🔹 **Explotar rápido** = Riesgo de perder mejores opciones.
+
+------------------------------------------------------------------------
+
+### 🧠 **Valores Q**
+
+Son las "expectativas de recompensa" por tomar una acción en un estado. Pero **saber el valor Q no basta**: el agente debe convertir esos valores en acciones reales mediante una **regla de elección**.
+
+------------------------------------------------------------------------
+
+### 🎯 **Reglas de elección**
+
+Son fórmulas o algoritmos que **transforman valores Q en decisiones**. Te ayudan a decidir entre múltiples opciones.
+
+------------------------------------------------------------------------
+
+### 💎 **Regla de Maximización (Greedy)**
+
+Selecciona **siempre la acción con mayor Q**.
+
+❌ Problemas:
+
+-   
+
+-   Las personas **no eligen siempre lo mejor** (variabilidad empírica).
+
+-   
+
+-   Se puede **quedar atrapado en un máximo local**, sin explorar mejores opciones.
+
+-   
+
+------------------------------------------------------------------------
+
+### ⚡ **Regla épsilon-codiciosa**
+
+Solución para el dilema exploración/explotación:
+
+-   
+
+-   Con **probabilidad (1 - ε)** elige la mejor acción.
+
+-   
+
+-   Con **probabilidad ε**, elige aleatoriamente.
+
+-   
+
+🔢 Ejemplo:
+
+-   
+
+-   ε = 0.1: Explora el 10% del tiempo.
+
+-   
+
+-   ε = 0.01: Explora menos, pero puede encontrar mejores resultados a largo plazo.
+
+-   
+
+------------------------------------------------------------------------
+
+### 🧪 **Funciones de respuesta probabilísticas**
+
+Modelos de psicología que **explican elecciones aleatorias**, especialmente cuando las diferencias entre opciones no son tan claras. Aquí entran:
+
+------------------------------------------------------------------------
+
+### 📊 **Funciones psicométricas**
+
+Muestran cómo, cuando las diferencias entre estímulos (o Qs) son pequeñas, las elecciones se vuelven menos consistentes. Se derivan dos modelos:
+
+------------------------------------------------------------------------
+
+### 🧩 **Modelos de Utilidad Aleatoria**
+
+#### ✅ **Función Probit**
+
+-   
+
+-   Supone que Q es **una variable aleatoria** (como una sensación).
+
+-   
+
+-   Usa la **distribución normal acumulada** para calcular la probabilidad de elegir una opción.
+
+-   
+
+#### ✅ **Función Logística (Logit o Softmax)**
+
+-   
+
+-   Más usada en aprendizaje automático.
+
+-   
+
+-   Transforma la diferencia entre Qs usando la función logística:
+
+    P(a1)=11+e−λ(Qa1−Qa2)P(a_1) = \frac{1}{1 + e^{-\lambda(Q_{a1} - Q_{a2})}}P(a1​)=1+e−λ(Qa1​−Qa2​)1​
+
+-   
+
+-   El parámetro **λ** controla la sensibilidad a las diferencias en Q.
+
+    -   
+
+    -   λ → 0 = elecciones casi aleatorias.
+
+    -   
+
+    -   λ → ∞ = elecciones deterministas (como la greedy).
+
+    -   
+
+-   
+
+------------------------------------------------------------------------
+
+### 💖 **Modelo de Luce (Elección Proporcional)**
+
+-   
+
+-   No considera que Q sea aleatorio.
+
+-   
+
+-   Elige acciones **proporcionalmente a su valor Q**:
+
+    P(a1)=Q(a1)Q(a1)+Q(a2)P(a_1) = \frac{Q(a_1)}{Q(a_1) + Q(a_2)}P(a1​)=Q(a1​)+Q(a2​)Q(a1​)​
+
+    Tiene una versión con λ que modula la sensibilidad, igual que el softmax.
+
+-   
+
+------------------------------------------------------------------------
+
+### ✨ En resumen:
+
+| Concepto                       | ¿Qué hace?                               |
+|--------------------------------|------------------------------------------|
+| **Política**                   | Decide qué acción tomar.                 |
+| **Exploración vs Explotación** | Dilema sobre probar o repetir acciones.  |
+| **Greedy (Maximización)**      | Siempre elige la mejor acción (según Q). |
+| **ε-codicioso**                | Mayoría greedy, pero a veces explora.    |
+| **Probit y Logit**             | Modelos probabilísticos de elección.     |
+| **Softmax**                    | Regla logística para múltiples opciones. |
+| **Luce (Acción proporcional)** | Elige basado en proporción del valor Q.  |
+
+------------------------------------------------------------------------
