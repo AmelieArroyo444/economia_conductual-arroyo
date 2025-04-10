@@ -1,0 +1,22 @@
+---
+title: "Politicas_rl"
+format: pdf
+---
+
+### 
+
+---
+title: "Pokémon Probabilities"
+format: html
+execute:
+  echo: true
+  eval: true
+  engine: knitr
+  freeze: auto
+  cache: false
+  warning: false
+  message: false
+  error: true
+  # Define Python path if needed
+  # python: "/ruta/a/tu/python"
+---
